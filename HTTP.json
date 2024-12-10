@@ -1,0 +1,83 @@
+{
+	"info": {
+		"_postman_id": "6c049566-37cb-46fd-be54-9074c90a246f",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "25181251",
+		"_collection_link": "https://martian-eclipse-745615.postman.co/workspace/MDS~f2d47d63-7618-405b-81dd-0907881e55ec/collection/25181251-6c049566-37cb-46fd-be54-9074c90a246f?action=share&source=collection_link&creator=25181251"
+	},
+	"item": [
+		{
+			"name": "DeleteStock",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:8081/stock/delete/Google"
+			},
+			"response": []
+		},
+		{
+			"name": "AllStocks",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8081/stock/all"
+			},
+			"response": []
+		},
+		{
+			"name": "PeriodStock",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"from\": \"2020-06-01\",\n  \"to\": \"2020-06-10\",\n  \"name\": \"Google\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8081/stock/info"
+			},
+			"response": []
+		},
+		{
+			"name": "AddStock",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Example Company\",\n  \"mark\": \"EXC\",\n  \"foundingDate\": \"2020-01-01\",\n  \"values\": [\n    {\n      \"date\": \"2020-01-02\",\n      \"open\": 100.5,\n      \"high\": 105.0,\n      \"low\": 98.0,\n      \"close\": 102.0,\n      \"adjClose\": 102.0,\n      \"volume\": 150000\n    },\n    {\n      \"date\": \"2020-01-03\",\n      \"open\": 102.0,\n      \"high\": 108.0,\n      \"low\": 101.0,\n      \"close\": 107.0,\n      \"adjClose\": 107.0,\n      \"volume\": 200000\n    }\n  ]\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8081/stock/add"
+			},
+			"response": []
+		},
+		{
+			"name": "PutStock",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Google\",\n  \"mark\": \"NINO\",\n  \"foundingDate\": \"2020-01-01\",\n  \"values\": []\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8081/stock/update"
+			},
+			"response": []
+		}
+	]
+}

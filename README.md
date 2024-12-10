@@ -1,3 +1,3 @@
 # MDSInformaticki
 
-Zadatak je implementiran u Spring tehnologiji 
+Zadatak je implementiran u SpringBoot tehnologiji 

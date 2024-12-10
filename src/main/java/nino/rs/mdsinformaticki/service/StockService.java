@@ -13,6 +13,8 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class StockService {
@@ -39,6 +41,64 @@ public class StockService {
 
         return true;
     }
+
+    public boolean updateStock(Stock stock) {
+        // Provera da li entitet Stock postoji
+        if (stockRepository.findByName(stock.getName()) == null) {
+            return false;
+        }
+
+        Stock existingStock = stockRepository.findByName(stock.getName());
+
+        if (stock.getName() != null) {
+            existingStock.setName(stock.getName());
+        }
+
+        if (stock.getMark() != null) {
+            existingStock.setMark(stock.getMark());
+        }
+
+        if (stock.getFoundingDate() != null) {
+            existingStock.setFoundingDate(stock.getFoundingDate());
+        }
+
+
+        if (stock.getValues() == null) {
+            return true;
+        }
+
+        Set<Value> updatedValues = stock.getValues();
+        Set<Value> existingValues = existingStock.getValues();
+
+        existingValues.removeIf(existingValue ->
+                updatedValues.stream().noneMatch(updatedValue -> updatedValue.getId() != null && updatedValue.getId().equals(existingValue.getId())));
+
+        for (Value updatedValue : updatedValues) {
+            Optional<Value> existingValueOpt = existingValues.stream()
+                    .filter(ev -> updatedValue.getId() != null && ev.getId().equals(updatedValue.getId()))
+                    .findFirst();
+
+            if (existingValueOpt.isPresent()) {
+                Value existingValue = existingValueOpt.get();
+                if (updatedValue.getDate() != null) {
+                    existingValue.setDate(updatedValue.getDate());
+                }
+
+                if (updatedValue.getClose() != null) {
+                    existingValue.setClose(updatedValue.getClose());
+                }
+
+            } else {
+                updatedValue.setStock(existingStock);
+                existingValues.add(updatedValue);
+            }
+        }
+
+        stockRepository.save(existingStock);
+
+        return true;
+    }
+
 
     public boolean deleteStock(String name) {
 

@@ -1,6 +1,5 @@
 package nino.rs.mdsinformaticki.controller;
 
-
 import nino.rs.mdsinformaticki.respository.StockRepository;
 import nino.rs.mdsinformaticki.respository.ValueRepository;
 import org.junit.jupiter.api.Test;

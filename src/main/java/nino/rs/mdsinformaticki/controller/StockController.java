@@ -43,6 +43,10 @@ public class StockController {
         return ResponseEntity.ok((stockService.addStock(stock)) ? "Stock added" : "Stock already exists");
     }
 
+    @PutMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateStock(@RequestBody Stock stock) {
+        return ResponseEntity.ok((stockService.updateStock(stock)) ? "Stock updated" : "Stock not found");
+    }
 
     @DeleteMapping(value = "/delete/{name}")
     public String delete(@PathVariable String name) {

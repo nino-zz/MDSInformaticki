@@ -1,7 +1,9 @@
 package nino.rs.mdsinformaticki.controller;
 
+import nino.rs.mdsinformaticki.request.StockReq;
 import nino.rs.mdsinformaticki.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,4 +42,11 @@ public class StockController {
         stockService.deleteStock(name);
         return "Stock deleted";
     }
+
+    @PostMapping(value = "/info", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> infoStock(@RequestBody StockReq stockReq) {
+
+        return ResponseEntity.ok(stockService.info(stockReq));
+    }
+
 }

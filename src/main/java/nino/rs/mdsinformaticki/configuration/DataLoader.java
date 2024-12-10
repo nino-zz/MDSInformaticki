@@ -3,6 +3,7 @@ package nino.rs.mdsinformaticki.configuration;
 import nino.rs.mdsinformaticki.model.Stock;
 import nino.rs.mdsinformaticki.model.Value;
 import nino.rs.mdsinformaticki.respository.StockRepository;
+import nino.rs.mdsinformaticki.respository.ValueRepository;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +18,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 @Component
 public class DataLoader implements CommandLineRunner {
 
     @Autowired
     private StockRepository stockRepository;
+
+    @Autowired
+    private ValueRepository valueRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -47,58 +52,47 @@ public class DataLoader implements CommandLineRunner {
                 .withTrim()
                 .parse(reader);
 
-        Stock stock = new Stock();
-        stock.setName(Paths.get(filePath).getFileName().toString().replace(".csv", ""));
-        stock.setValues(new ArrayList<>());
-        stock.setMark(stock.getName().substring(0, 3).toUpperCase());
-        stock.setFoundingDate(LocalDate.of(2021, 1, 1));
+        // Uzimanje imena stock-a iz naziva fajla
+        String stockName = Paths.get(filePath).getFileName().toString().replace(".csv", "");
+
+        // Proveriti da li postoji stock sa istim imenom
+        Stock stock = stockRepository.findByName(stockName);
+        if (stock == null) {
+            // Ako stock ne postoji, kreiraj novi
+            stock = new Stock();
+            stock.setName(stockName);
+            stock.setValues(new HashSet<>());
+            stock.setMark(stockName.substring(0, 3).toUpperCase());
+            stock.setFoundingDate(LocalDate.of(2021, 1, 1));
+            stockRepository.save(stock);
+        }
+
 
         for (CSVRecord record : records) {
 
             Value value = new Value();
-            value.setStock(stock);  // Associate this value with the stock entity
+
             value.setDate(LocalDate.parse(record.get("Date")));
+            value.setOpen(parseDouble(record.get("Open")));
+            value.setHigh(parseDouble(record.get("High")));
+            value.setLow(parseDouble(record.get("Low")));
+            value.setClose(parseDouble(record.get("Close")));
+            value.setAdjClose(parseDouble(record.get("Adj Close")));
+            value.setVolume(parseLong(record.get("Volume")));
 
-            if(record.get("Open").equals("null")) {
-                value.setOpen(0.0);
-            } else {
-                value.setOpen(Double.parseDouble(record.get("Open")));
-            }
+            value.setStock(stock);
 
-            if(record.get("High").equals("null")) {
-                value.setHigh(0.0);
-            } else {
-                value.setHigh(Double.parseDouble(record.get("High")));
-            }
+            valueRepository.save(value);
 
-            if (record.get("Low").equals("null")) {
-                value.setLow(0.0);
-            } else {
-                value.setLow(Double.parseDouble(record.get("Low")));
-            }
-
-            if(record.get("Close").equals("null")) {
-                value.setClose(0.0);
-            } else {
-                value.setClose(Double.parseDouble(record.get("Close")));
-            }
-
-            if(record.get("Adj Close").equals("null")) {
-                value.setAdjClose(0.0);
-            } else {
-                value.setAdjClose(Double.parseDouble(record.get("Adj Close")));
-            }
-
-            if(record.get("Volume").equals("null")) {
-                value.setVolume(Long.parseLong(0 + ""));
-            } else {
-                value.setVolume(Long.parseLong(record.get("Volume")));
-            }
-
-            stock.getValues().add(value);
         }
+    }
 
-        stockRepository.save(stock);
+    private double parseDouble(String value) {
+        return value.equals("null") || value.isEmpty() ? 0.0 : Double.parseDouble(value);
+    }
+
+    private long parseLong(String value) {
+        return value.equals("null") || value.isEmpty() ? 0 : Long.parseLong(value);
     }
 
 }

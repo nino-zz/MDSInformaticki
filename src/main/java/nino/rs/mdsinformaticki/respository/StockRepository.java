@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface StockRepository extends JpaRepository<Stock, Long> {
     Stock findByName(String name);
+    boolean existsByName(String name);
 }

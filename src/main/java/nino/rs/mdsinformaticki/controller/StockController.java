@@ -1,5 +1,6 @@
 package nino.rs.mdsinformaticki.controller;
 
+import nino.rs.mdsinformaticki.model.Stock;
 import nino.rs.mdsinformaticki.request.StockReq;
 import nino.rs.mdsinformaticki.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +31,18 @@ public class StockController {
         Set<String> seenNames = new HashSet<>();
 
         stockService.getStocks().stream()
-                .filter(stock -> seenNames.add(stock.getName())) // Dodaje samo ako ime nije već viđeno
+                .filter(stock -> seenNames.add(stock.getName()))
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(seenNames);
 
     }
+
+    @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> addStock(@RequestBody Stock stock) {
+        return ResponseEntity.ok((stockService.addStock(stock)) ? "Stock added" : "Stock already exists");
+    }
+
 
     @DeleteMapping(value = "/delete/{name}")
     public String delete(@PathVariable String name) {
@@ -46,7 +53,6 @@ public class StockController {
 
     @PostMapping(value = "/info", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> infoStock(@RequestBody StockReq stockReq) {
-
         return ResponseEntity.ok(stockService.info(stockReq));
     }
 

@@ -1,5 +1,6 @@
 package nino.rs.mdsinformaticki.controller;
 
+
 import nino.rs.mdsinformaticki.respository.StockRepository;
 import nino.rs.mdsinformaticki.respository.ValueRepository;
 import org.junit.jupiter.api.Test;
@@ -14,8 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PeriodStocks {
-
+public class PostStock {
 
     @Autowired
     private MockMvc mockMvc;
@@ -26,17 +26,37 @@ public class PeriodStocks {
     @Autowired
     private ValueRepository valueRepository;
 
-
     @Test
     public void test() throws Exception {
 
         String jsonBody = "{\n" +
-                "  \"from\": \"2020-06-01\",\n" +
-                "  \"to\": \"2020-06-10\",\n" +
-                "  \"name\": \"Google\"\n" +
+                "  \"name\": \"Example Company\",\n" +
+                "  \"mark\": \"EXC\",\n" +
+                "  \"foundingDate\": \"2020-01-01\",\n" +
+                "  \"values\": [\n" +
+                "    {\n" +
+                "      \"date\": \"2020-01-02\",\n" +
+                "      \"open\": 100.5,\n" +
+                "      \"high\": 105.0,\n" +
+                "      \"low\": 98.0,\n" +
+                "      \"close\": 102.0,\n" +
+                "      \"adjClose\": 102.0,\n" +
+                "      \"volume\": 150000\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"date\": \"2020-01-03\",\n" +
+                "      \"open\": 102.0,\n" +
+                "      \"high\": 108.0,\n" +
+                "      \"low\": 101.0,\n" +
+                "      \"close\": 107.0,\n" +
+                "      \"adjClose\": 107.0,\n" +
+                "      \"volume\": 200000\n" +
+                "    }\n" +
+                "  ]\n" +
                 "}";
 
-        String responseContent = mockMvc.perform(post("http://localhost:8081/stock/info")
+
+        String responseContent = mockMvc.perform(post("http://localhost:8081/stock/add")
                         .contentType("application/json")
                         .content(jsonBody))
                 .andExpect(status().isOk())
@@ -46,5 +66,6 @@ public class PeriodStocks {
                 .getContentAsString();
 
         System.out.println("Response content: " + responseContent);
+
     }
 }

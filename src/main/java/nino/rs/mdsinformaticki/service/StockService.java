@@ -26,6 +26,20 @@ public class StockService {
         return stockRepository.findAll();
     }
 
+    public boolean addStock(Stock stock) {
+
+        if(stockRepository.existsByName(stock.getName()))
+            return false;
+
+        stockRepository.save(stock);
+
+        System.out.println(stock.getValues().size());
+        for(Value value : stock.getValues())
+            valueRepository.save(value);
+
+        return true;
+    }
+
     public boolean deleteStock(String name) {
 
         Stock stock = stockRepository.findByName(name);
@@ -73,6 +87,10 @@ public class StockService {
         double minClose = Double.MAX_VALUE;
         double maxProfit = 0.0;
 
+        double sumProfit = 0.0;
+
+        Sell sell = null;
+
         while(true){
 
             for(Value value : values){
@@ -89,17 +107,43 @@ public class StockService {
 
             }
 
-            if(sellDate != null && buyDate != null && sellDate.isAfter(buyDate))
-                break;
+            if(sellDate != null && buyDate != null && sellDate.isAfter(buyDate) && sell == null){
+                sell = new Sell(buyDate, sellDate, minClose,minClose + maxProfit, maxProfit);
+                System.out.println("dodao sam najbolji trade: " + maxProfit + "za period: " + buyDate + " - " + sellDate);
 
-            if(getValueFromList(values, minClose) != null)
                 values.remove(getValueFromList(values, minClose));
+
+                minClose = Double.MAX_VALUE;
+                maxProfit = 0.0;
+
+                continue;
+            }
+
+            if(sellDate != null && buyDate != null && !sellDate.isAfter(buyDate)){
+                values.remove(getValueFromList(values, minClose));
+                minClose = Double.MAX_VALUE;
+                maxProfit = 0.0;
+                continue;
+            }
+
+            if(sellDate != null && buyDate != null && sellDate.isAfter(buyDate)){
+                sumProfit += maxProfit;
+                values.remove(getValueFromList(values, minClose));
+                System.out.println("dodao sam profit: " + maxProfit + "za period: " + buyDate + " - " + sellDate);
+            }
+
+
+            if(values.size() == 1)
+                break;
 
             minClose = Double.MAX_VALUE;
             maxProfit = 0.0;
+
         }
 
-        return new Sell(buyDate, sellDate, minClose,minClose + maxProfit, maxProfit);
+        sell.setMaxProfit(sumProfit);
+
+        return sell;
     }
 
     private Value getValueFromList(List<Value> values, double close){

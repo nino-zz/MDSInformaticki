@@ -95,8 +95,6 @@ public class StockService {
             if(getValueFromList(values, minClose) != null)
                 values.remove(getValueFromList(values, minClose));
 
-            System.out.println(values.size());
-
             minClose = Double.MAX_VALUE;
             maxProfit = 0.0;
         }

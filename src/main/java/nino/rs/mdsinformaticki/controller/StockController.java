@@ -39,8 +39,9 @@ public class StockController {
 
     @DeleteMapping(value = "/delete/{name}")
     public String delete(@PathVariable String name) {
-        stockService.deleteStock(name);
-        return "Stock deleted";
+        if(stockService.deleteStock(name))
+            return "Stock deleted";
+        return "Stock not found";
     }
 
     @PostMapping(value = "/info", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

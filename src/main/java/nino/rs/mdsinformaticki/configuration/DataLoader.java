@@ -17,7 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
 
 @Component
@@ -63,7 +62,10 @@ public class DataLoader implements CommandLineRunner {
             stock.setName(stockName);
             stock.setValues(new HashSet<>());
             stock.setMark(stockName.substring(0, 3).toUpperCase());
+
+            // ovo doraditi da genrise random
             stock.setFoundingDate(LocalDate.of(2021, 1, 1));
+
             stockRepository.save(stock);
         }
 
@@ -73,12 +75,7 @@ public class DataLoader implements CommandLineRunner {
             Value value = new Value();
 
             value.setDate(LocalDate.parse(record.get("Date")));
-            value.setOpen(parseDouble(record.get("Open")));
-            value.setHigh(parseDouble(record.get("High")));
-            value.setLow(parseDouble(record.get("Low")));
             value.setClose(parseDouble(record.get("Close")));
-            value.setAdjClose(parseDouble(record.get("Adj Close")));
-            value.setVolume(parseLong(record.get("Volume")));
 
             value.setStock(stock);
 
@@ -90,9 +87,4 @@ public class DataLoader implements CommandLineRunner {
     private double parseDouble(String value) {
         return value.equals("null") || value.isEmpty() ? 0.0 : Double.parseDouble(value);
     }
-
-    private long parseLong(String value) {
-        return value.equals("null") || value.isEmpty() ? 0 : Long.parseLong(value);
-    }
-
 }

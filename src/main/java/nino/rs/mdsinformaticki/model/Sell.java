@@ -1,12 +1,7 @@
 package nino.rs.mdsinformaticki.model;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.time.LocalDate;
 
-@Getter
-@Setter
 public class Sell {
 
     private LocalDate dateBuy;
@@ -16,6 +11,8 @@ public class Sell {
     private double priceSell;
 
     private double profit;
+
+    private double maxProfit;
 
     public Sell(LocalDate dateBuy, LocalDate dateSell, double priceBuy, double priceSell, double profit) {
         this.dateBuy = dateBuy;
@@ -63,5 +60,13 @@ public class Sell {
 
     public void setDateSell(LocalDate dateSell) {
         this.dateSell = dateSell;
+    }
+
+    public double getMaxProfit() {
+        return maxProfit;
+    }
+
+    public void setMaxProfit(double maxProfit) {
+        this.maxProfit = maxProfit;
     }
 }
